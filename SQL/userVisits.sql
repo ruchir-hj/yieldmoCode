@@ -13,7 +13,7 @@ create table userVisits as (
     from (
         select a.CookieID "CookieID",
             a.ViewTimeStamp "ViewTimeStamp"
-            from Logs -- Partition (p8)       -- If its range partitioned uncomment the Partition and give the partition number for tha day
+            from Logs -- Partition (p8)       -- If its range partitioned then uncomment the Partition and give the partition names for that day
             a,
             Location b, Site c
             where
@@ -21,7 +21,19 @@ create table userVisits as (
             and a.LocationID = b.LocationID
             and b.State = "New York"
             and a.SiteID = c.SiteID
-            and c.SiteName != "CNN") d
+            and c.SiteName != "CNN"
+            and a.CookieID  in ( -- Ensure that user has never ever visited CNN
+                select CookieID from (
+                    select Logs.CookieID, Site.SiteID, count(Logs.CookieID)
+                        from Logs, Site
+                        where
+                        Logs.SiteID = Site.SiteID
+                        and Site.SiteName = "CNN"
+                        Group By (Logs.CookieID)
+                        having count(Logs.CookieID) = 0 -- if count is 0 then user has never visited CNN
+                    ) e
+                )
+            ) d
         group by (CookieID)
     );
 

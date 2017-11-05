@@ -11,7 +11,7 @@ The function main is being used to test the mergeSegments function.
 Time Complexity = sorting time (nlogn) + traversing time (n)
 ~ O(nlogn)
 
-PS : As I have used lambda for sorting please built the project with Java 1.8
+PS : As I have used lambda for sorting so please build the project with Java 1.8
 
 SQL Questions :
 --------------
